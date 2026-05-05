@@ -1,0 +1,638 @@
+---
+title: "Bellabeat Case Study"
+author: "Mary A.Trankel"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+  word_document:
+    toc: true
+subtitle: '**_How Consumers Use Fitness Tracking Data_**'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  results = "hide"
+)
+knitr::opts_knit$set(root.dir = "..")
+```
+
+```{r load libraries, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+```{r theme-bellabeat, echo = FALSE}
+theme_bellabeat <- theme(
+  plot.title = element_text(
+    size = 16,
+    face = "bold",
+    color = "#165081"
+  ),
+  plot.subtitle = element_text(
+    size = 12,
+    face = "bold.italic",
+    color = "#2171B5"
+  ),
+  axis.title.x = element_text(face = "bold", color = "#2171B5", size = 11),
+  axis.title.y = element_text(face = "bold", color = "#2171B5", size = 11),
+  axis.text.x = element_text(face = "bold"),
+  axis.text.y = element_text(face = "bold")
+)
+```
+
+# Introduction & Business Context
+[_Bellabeat_](https://bellabeat.com/) is a wellness technology company that develops data-driven products to support women's health across activity, sleep, and lifestyle domains. As the wearable technology market becomes increasingly competitive and saturated, sustained engagement depends not only on feature parity but on how effectively products translate behavioral data into meaningful, actionable insights for users.
+
+This case study analyzes publicly available _Fitbit_ fitness tracker data to explore patterns in user activity, sleep behavior, and engagement over time. The purpose of the analysis is to identify consistent usage patterns, behavioral gaps, and engagement opportunities that could inform **_Bellabeat’s_** marketing strategy and product positioning.
+
+## Business task & key questions
+The analytical approach in this project reflects an applied research and decision‑support mindset focused on _reproducibility_ and _sound data practices_. Raw source data are preserved, all transformations are documented, and analytical decisions are grounded in practical evaluation principles rather than purely exploratory or theoretical modeling. This workflow mirrors how data analysts operate in applied industry contexts where transparency, reliability, and interpretability are critical for stakeholder trust and downstream decision‑making.
+
+Drawing on over a decade of experience conducting mixed‑methods research and evaluation in real‑world settings, this analysis emphasizes insights that are both empirically defensible and operationally useful. While the dataset represents _Fitbit_ users rather than **_Bellabeat_** customers directly, the observed behavioral patterns offer a strong empirical basis for refining engagement strategies and guiding future hypothesis‑driven analysis.
+
+## Stakeholders
+- **Urška Sršen**, Co-Founder and Chief Creative Officer of _Bellabeat_; believes that analyzing smart device fitness data could help unlock new growth opportunities for the company.
+- **Sando Mur**, Mathematician and _Bellabeat_ Co-Founder; key member of the Executive Team.
+- **Marketing Analytics Team**, a team of data analysts responsible for collecting, analyzing and reporting data that helps guide _Bellabeat's_ marketing strategies.
+
+## Focus of this analysis
+[_Bellabeat's **Time**_](https://bellabeat.com/shop) device was selected for this analysis. _Time_ is a [_smart watch_](https://bellabeat.com/product/time/) with an app that provides health data related to the user's activity level, sleep patterns, and other mindful habits. The app data is intended to help users understand their current habits in order to make healthy decisions. The tagline indicates that _**Time** will effortlessly blend into your everyday as a luxury hybrid wellness watch, suitable for any occasion_.
+
+<p style="margin-bottom:0;">
+**Benefits** of the _Time_ smart watch with included app:</p>
+- Optimized for women’s health
+- Calculates Wellness score
+- Monitors activity and sleep
+- Tracks menstrual cycle, meditation, and hydration
+- Gives insights into your health and lifestyle with guidance on how to improve them
+- Lightweight, safe for skin, and hypoallergenic
+
+# Key Questions
+1. What are some trends in [smart device](https://en.wikipedia.org/wiki/Smart_device) usage?
+2. How could these trends apply to _Bellabeat_ customers?
+3. How could these trends help influence _Bellabeat_ **marketing strategy** to improve engagement by customers?
+
+# Data Sources & Preparation
+
+## Dataset used for analysis
+[FitBit Fitness Tracker Data](https://www.kaggle.com/datasets/arashnic/fitbit) (CC0: Public Domain, made available through [Mobius](https://www.kaggle.com/arashnic)) was selected as the dataset most appropriate for this analysis. This is a [Kaggle](https://kaggle.com) dataset that contains personal fitness tracker data from thirty [FitBit](https://store.google.com/category/watches_trackers) users who consented to the submission of their personal tracker data. Separate files in the dataset include minute-level output for daily physical activity - such as number of steps and sleep patterns, including time ranges.
+
+## Limitations of the data
+The dataset was obtained from a small sample of 30 self-selected users, so we cannot assume it represents a random sample of _smart watch_ users. However, trends and usage could be promoted to _Bellabeat **Time**_ users if marketing strategies can be designed to encourage similar behaviors.
+
+One limitation of this dataset is that not all users contributed data to all tables.
+
+# Data Cleaning & Processing
+
+All data cleaning and preparation steps are documented in **~project/scripts**. Scripts should be executed in the numbered sequence represented by the .R file names.
+
+## Data workflow & reproducibility
+- Raw data is stored in **~project/data/raw**
+- All cleaning processes are scripted
+- Processed datasets are written to **~project/data/processed**
+- Analysis was performed on processed data only
+
+## Data cleaning decisions
+- Removed duplicate records
+- Filtered invalid or zero-activity days
+- Standardized date formats
+- Checked for missing values
+
+# Analysis & Key Findings
+Daily data was examined to establish baseline engagement with the _Time_ device. This included:
+- Daily activity levels (steps per day)
+- Active vs sedentary time
+
+## Specific guiding questions:
+-	When during the day do users engage most with their wearable device?
+-	How consistent is device usage across days and users?
+-	Where are the largest gaps in activity or engagement?
+-	How can Bellabeat _**Time**_ better support daily routines?
+
+## Daily activity levels
+
+A primary goal was to focus on intra-day activity rather than simple daily totals. Here I emphasize time-of-day behavior to identify patterns that can inform _Bellabeat_ marketing strategies for the **Time** device.
+
+The plot below was generated to display **_when users actually engage_** with their device during a typical day.
+
+This approach helps answer the following specific questions:
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> What are the trends in smart device usage?<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> When during the day do users actually engage with their device?
+</div>
+
+<!-- PLOT 1 -->
+```{r load clean hourly-steps-plot data, echo = FALSE, message = FALSE, warning = FALSE}
+hourly_steps_by_hour_clean <- read_csv("data/processed/hourly_steps_by_hour_clean.csv")
+```
+
+```{r hourly-steps-plot, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(hourly_steps_by_hour_clean) +
+  geom_line(
+    aes(x = hour, y = avg_steps, color = "Mean"),
+    linewidth = 1
+  ) +
+  geom_line(
+    aes(x = hour, y = median_steps, color = "Median"),
+    linetype = "dashed",
+    linewidth = 0.9
+  ) +
+  geom_point(aes(x = hour, y = avg_steps, color = "Mean")) +
+  geom_point(aes(x = hour, y = median_steps, color = "Median")) +
+  scale_x_continuous(breaks = 0:23) +
+  scale_color_manual(values = c("Mean" = "#2C7FB8", "Median" = "black")) +
+  labs(
+    title = "Hourly Step Patterns Across the Day",
+    subtitle = "Median reveals typical behavior masked by high-activity outliers",
+    x = "Hour of Day",
+    y = "Steps",
+    color = "Statistic"
+  ) + theme_bellabeat
+```
+
+### Behavioral insights
+
+Users are most active during consistent daytime windows, with noticeable peaks that are clear for two different types of users. **Mean** step counts are influenced by a small number of highly active users. I have added the **median** step count to this graphic because it reveals a stable, routine-driven activity pattern that is more typical for the majority of users.
+
+These patterns help answer the original business question: **_When do users actually engage with their device during a typical day?_**
+
+### Marketing implications
+
+- The observed patterns indicate that most users engage with their wearable device as part of predictable daily routines, rather than sporadic bursts of extreme activity.
+- _Bellabeat_ should emphasize **_habit reinforcement_** rather than _performance optimization_.
+- Messaging, notifications, and content should align with morning and early evening routines in order to reinforce consistency, rather than intensity.
+
+After identifying when users are active, we examine how intensely they move throughout those periods.
+
+## Activity intensity by time of day
+
+With the next chart we address the following business questions:
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> How could usage trends apply to Bellabeat customers?<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> Where does the device deliver the most value during the day?
+</div>
+
+This addresses the question: **_When does Bellabeat Time deliver the most behavioral value?_**
+
+Here we can see that _smart watch_ users are not primarily using the device for high intensity training. Users primarily use the device to support moderate, sustainable activity. Note that this chart presents information about _median_ as well as _mean_. As a result, we can see that this dataset is skewed by the higher activity performed by a small portion of users in this sample. So in this case the **_median_** is a _more accurate reflection of the true average_ for the majority of users.
+
+<!-- PLOT 2 -->
+```{r load intensity-by-time-of-day-clean, echo = FALSE, message = FALSE, warning = FALSE}
+hourly_activity_clean <- read_csv("data/processed/hourly_activity_clean.csv")
+hourly_steps_by_hour_clean <- read_csv("data/processed/hourly_steps_by_hour_clean.csv")
+intensity_by_time_of_day_clean <- read_csv("data/processed/intensity_by_time_of_day_clean.csv")
+```
+
+```{r intensity-by-time-of-day-plot, echo = FALSE, message = FALSE, warning = FALSE}
+intensity_by_time_of_day_clean <- hourly_activity_clean %>%
+  group_by(time_of_day) %>%
+  summarize(
+    avg_intensity = mean(average_intensity, na.rm = TRUE),
+    median_intensity = median(average_intensity, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+write_csv(
+  intensity_by_time_of_day_clean,
+  "data/processed/intensity_by_time_of_day_clean.csv"
+)
+
+ggplot(intensity_by_time_of_day_clean, aes(x = time_of_day)) +
+  geom_col(
+    aes(y = avg_intensity, fill = "Mean"),
+    show.legend = TRUE
+  ) +
+  geom_point(
+    aes(y = median_intensity, color = "Median"),
+    size = 3
+  ) +
+  geom_line(
+    aes(y = median_intensity, group = 1, color = "Median"),
+    linewidth = 0.8
+  ) +
+  scale_fill_manual(
+    values = c("Mean" = "#9ECAE1")
+  ) +
+  scale_color_manual(
+    values = c("Median" = "black")
+  ) +
+  labs(
+    title = "Activity Intensity by Time of Day",
+    subtitle = "Mean shown by bars; median highlighted to reveal skewness",
+    x = "Time of Day",
+    y = "Activity Intensity",
+    fill = "Statistic",
+    color = "Statistic",
+  ) + theme_bellabeat
+```
+
+### Behavioral insights
+While step counts vary throughout the day, activity intensity remains moderate and relatively stable. Peaks in intensity do not necessarily coincide with peak step counts. Extrapolating these findings to Bellabeat _Time_ watch customers, we can suspect that the majority of our customers are using their device to support moderate, sustainable activity rather than high intensity training.
+
+### Marketing implications
+Marketing should avoid positioning _Bellabeat Time_ as a fitness tracker for “elite” or “high performance” users. Instead, it should frame intensity feedback as guidance for _balance, energy management, and overall well being_. This finding also supports the idea that wellness-focused features such as sleep, stress reduction, and mindfulness are equally valuable with movement tracking.
+
+Next, we assess whether these patterns hold consistently across different types of days within the week.
+
+## Routine stability patterns
+This section examines whether daily engagement rhythms persist across weekdays and weekends. By doing this we can address the following business questions:
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> How consistent is device usage?<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> How predictable are engagement patterns?
+</div>
+
+The chart below helps us understand whether users are wearing and engaging with their device consistently, or only opportunistically. This supports _Bellabeat’s_ holistic wellness positioning - that users are not optimizing one behavior at the expense of another; rather, they are balancing both.
+
+<!-- PLOT 3 -->
+```{r load clean steps-weekday-weekend data, echo = FALSE, message = FALSE, warning = FALSE}
+steps_weekday_weekend_clean <- read_csv("data/processed/steps_weekday_weekend_clean.csv")
+```
+
+```{r steps-weekday-weekend plot, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(steps_weekday_weekend_clean, aes(x = hour)) +
+  geom_line(
+    aes(y = avg_steps, color = day_type),
+    linewidth = 1
+  ) +
+  geom_line(
+    aes(y = median_steps, color = day_type),
+    linetype = "dashed",
+    linewidth = 0.9
+  ) +
+  scale_x_continuous(breaks = 0:23) +
+  labs(
+    title = "Hourly Steps: Weekday vs Weekend",
+    subtitle = "Solid lines show means; dashed lines show typical behavior",
+    x = "Hour of Day",
+    y = "Steps",
+    color = "Day Type"
+  ) + theme_bellabeat
+```
+
+Again I present both _median_ and _mean_ data. Generally speaking, the patterns of activity are very similar for both weekends and weekdays. The pattern shown by the dashed lines reflects behavior for the majority of users, which is slightly more stable than that of the small group of highly active users.
+
+### Behavioral insights
+There is no strong trade off between higher activity and adequate sleep. Most users cluster around moderate activity levels with sufficient sleep duration.
+
+### Marketing implications
+Bellabeat can credibly position its product as supporting sustainable wellness, not “burnout fitness.” Campaigns can emphasize balance, long term health, and self awareness rather than maximizing metrics.
+This is especially aligned with Bellabeat’s female focused branding and lifestyle emphasis.
+
+Beyond activity timing and consistency, we now explore how engagement relates to recovery.
+
+## Sleep patterns
+
+I chose to recreate daily sleep metrics directly from minute-level sleep data instead of relying on pre-aggregated tables. This provided more control over assumptions such as _what constitutes a nap_. In the chart below we examine:
+- Average sleep duration
+- Relationship between activity and sleep
+
+Next we explore the consistency of tracker usage for activity level vs. sleep patterns. In doing so we address the following business questions:
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> How can Bellabeat influence engagement?<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> What actionable user groups exist?
+</div>
+
+### Daily steps vs. sleep duration
+
+In the chart below we can see that most users balance moderate activity with adequate sleep.
+
+<!-- PLOT 4 -->
+```{r load clean user-behavior plot data, echo = FALSE, message = FALSE, warning = FALSE}
+user_behavior_clean <- read_csv("data/processed/user_behavior_clean.csv")
+```
+
+```{r daily-steps-vs-sleep-duration plot, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(user_behavior_clean,
+       aes(x = avg_sleep_hours, y = avg_daily_steps)) +
+  geom_point(alpha = 0.6, color = "#2C7FB8") +
+  labs(
+    title = "Average Daily Steps vs Average Sleep Duration",
+    subtitle = "Most users balance moderate activity with adequate sleep",
+    x = "Average Sleep (Hours)",
+    y = "Average Daily Steps"
+  ) + theme_bellabeat
+```
+
+### Behavioral insights
+Users naturally fall into clear segments (Low, Moderate, High engagement), with meaningful differences in step behavior.
+These patterns indicate that not all users need the same messaging, features, or nudges. Thus, a single “one size fits all” engagement strategy will not provide the best value for customers.
+
+### Marketing implication
+_Bellabeat_ can design differentiated strategies:
+-	Encourage Low Engagement users with habit building prompts
+-	Reinforce Moderate users’ consistency
+-	Offer optional depth for High Engagement users without overwhelming others
+
+This segmentation supports personalized marketing without requiring demographic data.
+
+Finally, we synthesize these behaviors into actionable user segments.
+
+## User engagement segments
+
+The boxplot below addresses the question: **_Who are our users, in behavioral terms we can act on?_**
+
+Specific business questions addressed here include:
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> How can Bellabeat influence engagement?<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> What actionable user groups exist?
+</div>
+
+The dark horizontal line inside each segment box is the _median_ for users in that activity segment. It represents the most typical user in each segment in terms of median daily step count. It is not influenced by very high or very low outliers, so it is particularly appropriate for this type of data, which is skewed by a small number of power users.
+
+<!-- PLOT 5 -->
+```{r daily-steps-by-engagement-segment plot, echo = FALSE, message = FALSE, warning = FALSE}
+user_behavior_segmented <- user_behavior_clean %>%
+  mutate(
+    activity_segment = case_when(
+      avg_daily_steps < 5000  ~ "Low Engagement",
+      avg_daily_steps < 10000 ~ "Moderate Engagement",
+      TRUE                    ~ "High Engagement"
+    ),
+    routine_segment = case_when(
+      evening_activity_ratio > 0.5 ~ "Evening-Focused",
+      active_hours_per_day >= 10   ~ "All-Day Wear",
+      TRUE                         ~ "Routine-Based"
+    )
+  )
+
+ggplot(
+  user_behavior_segmented,
+  aes(x = activity_segment, y = avg_daily_steps, fill = activity_segment)
+) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Daily Activity Levels by Engagement Segment",
+    subtitle = "Clear behavioral groupings reveal marketing-relevant user segments",
+    x = "Engagement Segment",
+    y = "Average Daily Steps"
+  ) + theme_bellabeat
+```
+
+### Behavioral insights
+Users naturally fall into clear segments (Low, Moderate, and High engagement), with meaningful differences in step behavior.
+Why this matters for Bellabeat _Time_: Not all users need the same messaging, features, or nudges. A single “one size fits all” engagement strategy will underperform.
+
+### Marketing implications
+_Bellabeat_ can design differentiated strategies:
+
+-	**Encourage _Low Engagement_ users** with habit-building prompts
+-	**Reinforce _Moderate_ users** regarding consistency
+-	**Offer optional depth for _High Engagement_ users** without overwhelming others
+
+This segmentation supports personalized marketing without requiring demographic data.
+
+# Summary & Recommendations
+
+## Summary
+Taken together, these findings point toward marketing strategies that prioritize consistency, personalization, and balance rather than performance optimization. The five figures presented here support the following conclusions:
+
+1. Smart device usage is routine-driven, not extreme, for the majority of users.
+2. Users value _balance_ in their activity over optimization (extreme activity).
+3. Engagement is consistent - but heterogeneous within low, moderate and high engagement sectors.
+4. _Bellabeat **Time**_ aligns naturally with sustainable wellness features of importance to smart watch users.
+5. Targeted marketing strategies could improve customer engagement without adding product features.
+
+Note that additional descriptive charts are included in the Appendix.
+
+## Recommendations
+
+It is possible that _Time_ users are not initially aware of all possibilities available with the _Time_ device, since customers may have started their usage with a simple strategy like "counting steps". It could be helpful to encourage users to explore additional options already available with the _Time_ device.
+
+Based on this summary of results, I would recommend the following marketing strategies for _Bellabeat **Time**_ customers. Care should be taken to target these approaches appropriately for each of the three segments of users:
+
+- Low Engagement
+- Moderate Engagement
+- High Engagement
+
+<div style="margin-left:1.5em;">
+<span style="color:green; font-size:1.2em;">&#10004;</span> Recommendation 1: Feature Messaging<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> Recommendation 2: Engagement Nudges<br>
+<span style="color:green; font-size:1.2em;">&#10004;</span> Recommendation 3: Education or Content Strategy
+</div>
+
+# Limitations & Next Steps
+This sample represents _smart device_ users, and the analysis extrapolates these results to mirror _Bellabeat_ customers of the **_Time_** smart watch.
+
+The dataset was not collected by _FitBit_ directly. It was generated through a distributed survey administered via [Amazon Mechanical Turk (MTurk)](https://rstudio-pubs-static.s3.amazonaws.com/789716_ca2be6de341f44c0b9e31695921e857f.html). Participants voluntarily submitted their FitBit tracking data for research use.
+
+## Key implications:
+-	Participants were self-selected (not a random sample).
+- We cannot assume that all participants were women.
+-	Data reflects users that were comfortable sharing their personal health data.
+-	Usage behavior may differ from the general population of wearable device users.
+- No demographic information is available, although this segmentation of users supports personalized marketing approaches without the necessity of considering demographic data.
+-	Device usage spans multiple FitBit devices, not a single model [https://mikanzuka.github.io/Data-Analysis-with-R/](https://mikanzuka.github.io/Data-Analysis-with-R/)
+- This analysis provides observational data only, and results cannot be assumed to justify causal conclusions.
+  - The sample size is too small for a statistical analysis of causal probability.
+  - This dataset cannot be considered a random sample of _smart device_ users.
+
+## Next steps
+If feasible, Bellabeat could consider one or both of the following options:
+
+- Gather similar data on existing _Bellabeat_ customers who purchased the **_Time_** device to compare how closely they match the behavior patterns of users in this data sample.  
+- Gather survey data from _Bellabeat **Time**_ device users to collect additional data about:
+  - existing features they like, including "how" and "why" these use these features
+  - new features they may wish to see in the future. This information could help _Bellabeat_ plan future enhancements that will help the company remain competitive in the marketplace.
+
+# APPENDICES
+The appendices provide supporting visualizations and summary tables that supplement the main analysis without interrupting the narrative flow of the report. These materials offer additional methodological transparency, demonstrate the robustness of feature engineering decisions, and illustrate exploratory patterns that inform—but do not drive—the primary business conclusions presented above.
+
+## APPENDIX A: Supporting Distributions
+**Appendix** A contains supplemental plots that describe the distribution and shape of key activity and sleep variables. These figures support analytic decisions made in the main report, such as the use of _medians_ in addition to _means_. These plots also help contextualize user behavior variability across the dataset.
+
+**Purpose:** _Show data shape and skew that justify addition of **medians**._
+
+```{r distribution-of-daily-steps plot, echo = FALSE, message = FALSE, warning = FALSE}
+daily_activity_clean <- read_csv("data/processed/daily_activity_clean.csv")
+
+ggplot(daily_activity_clean, aes(x = total_steps)) +
+  geom_histogram(
+    bins = 40,
+    fill = "#9ECAE1",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Daily Steps",
+    subtitle = "Skewed distribution supports use of median-based summaries",
+    x = "Total Daily Steps",
+    y = "Number of Days"
+  ) + theme_bellabeat
+```
+
+```{r sleep-duration-patterns-plot, echo = FALSE, message = FALSE, warning = FALSE}
+daily_sleep_clean <- read_csv("data/processed/daily_sleep_clean.csv")
+
+ggplot(daily_sleep_clean, aes(y = sleep_hours)) +
+  geom_boxplot(
+    fill = "#756BB1",
+    alpha = 0.6,
+    outlier.color = "black"
+  ) +
+  labs(
+    title = "Variation in Sleep Duration",
+    subtitle = "Variation in sleep duration supports median-based summaries",
+    y = "Sleep Duration (Hours)",
+    x = NULL
+  ) + theme_bellabeat
+```
+
+## APPENDIX B: User Level Summary Tables
+**Appendix B** presents compact summary tables derived from user level aggregated datasets. These tables demonstrate feature engineering logic, summarize typical user behavior across the observation period, and provide quantitative support for the engagement segments referenced in the main analysis.
+
+**Purpose:** _Demonstrate segmentation logic and feature engineering_
+
+<!-- TABLE 1 -->
+```{r appendix-engagement-segment-summary, echo = FALSE, message = FALSE, warning = FALSE, results = "asis"}
+user_behavior_clean <- read_csv("data/processed/user_behavior_clean.csv")
+
+user_behavior_segmented <- user_behavior_clean %>%
+  mutate(
+    activity_segment = case_when(
+      avg_daily_steps < 5000  ~ "Low Engagement",
+      avg_daily_steps < 10000 ~ "Moderate Engagement",
+      TRUE                    ~ "High Engagement"
+    )
+  )
+
+engagement_segmented_table <- user_behavior_segmented %>%
+  group_by(activity_segment) %>%
+  summarize(
+    users_in_segment    = n(),
+    median_daily_steps  = median(avg_daily_steps, na.rm = TRUE),
+    median_sleep_hours  = median(avg_sleep_hours, na.rm = TRUE),
+    median_active_hours = median(active_hours_per_day, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  engagement_segmented_table,
+  caption = "<span style='color:#756BB1; font-size:1.2em; font-weight:bold;'>
+               User Engagement Segment Summary
+             </span>"
+)
+```
+
+<!-- TABLE 2 -->
+```{r appendix-user-daily-summary, echo = FALSE, message = FALSE, warning = FALSE, results = "asis"}
+user_daily_summary_clean <- read_csv("data/processed/user_daily_summary_clean.csv")
+
+daily_activity_summary_table <- user_daily_summary_clean %>%
+  summarize(
+    total_users              = n(),
+    median_avg_daily_steps   = median(avg_daily_steps, na.rm = TRUE),
+    iqr_avg_daily_steps      = IQR(avg_daily_steps, na.rm = TRUE),
+    median_step_variability  = median(sd_daily_steps, na.rm = TRUE)
+  )
+
+knitr::kable(
+  daily_activity_summary_table,
+  caption = "<span style='color:#756BB1; font-size:1.2em; font-weight:bold;'>
+               Daily Activity Summary Across Users
+             </span>"
+)
+```
+
+<!-- TABLE 3 -->
+```{r appendix-user-hourly-summary, echo = FALSE, message = FALSE, warning = FALSE, results = "asis"}
+user_hourly_summary_clean <- read_csv("data/processed/user_hourly_summary_clean.csv")
+
+hourly_engagement_summary_table <- user_hourly_summary_clean %>%
+  summarize(
+    total_users                 = n(),
+    median_active_hours_per_day = median(active_hours_per_day, na.rm = TRUE),
+    median_avg_hourly_steps     = median(avg_hourly_steps, na.rm = TRUE),
+    median_avg_intensity        = median(avg_intensity, na.rm = TRUE)
+  )
+
+knitr::kable(
+  hourly_engagement_summary_table,
+  caption = "<span style='color:#756BB1; font-size:1.2em; font-weight:bold;'>
+               Hourly Engagement and Device Wear Summary
+             </span>"
+)
+```
+
+## APPENDIX C: Exploratory Data & Visualizations
+**Appendix C** includes exploratory visualizations that highlight secondary behavioral patterns related to timing, intensity, and sleep behavior. These views offer additional depth and nuance, but were not required to answer the primary business questions guiding this analysis.
+
+### Evening Activity Preference
+**Purpose:** This visualization illustrates the distribution of evening focused activity across users, and supports conclusions about _routine-based_ versus _time-concentrated_ engagement. While not central to the main business questions, this histogram provides additional insight into how users allocate activity within their day.
+
+```{r evening-activity-preference plot, echo = FALSE, message = FALSE, warning = FALSE}
+user_behavior_clean <- read_csv("data/processed/user_behavior_clean.csv")
+
+ggplot(user_behavior_clean,
+       aes(x = evening_activity_ratio)) +
+  geom_histogram(bins = 30, fill = "#756BB1", color = "white") +
+  labs(
+    title = "Evening Activity Preference Among Users",
+    subtitle = "Some users concentrate activity in the evening",
+    x = "Proportion of Activity Occurring in the Evening",
+    y = "Number of Users"
+    ) + theme_bellabeat
+```
+
+### Activity Intensity vs. Active Hours
+**Purpose:** This plot explores the relationship between activity intensity and total daily engagement time, highlighting the observation that extended device use does not require high intensity activity. The figure reinforces the positioning of Bellabeat Time as a wellness oriented device rather than a performance training tool.
+
+```{r activity-intensity-vs-daily-engagement plot, echo = FALSE, message = FALSE, warning = FALSE}
+user_behavior_clean <- read_csv("data/processed/user_behavior_clean.csv")
+
+ggplot(user_behavior_clean,
+       aes(x = avg_intensity, y = active_hours_per_day)) +
+  geom_point(alpha = 0.6, color = "#41AB5D") +
+  labs(
+    title = "Activity Intensity vs Daily Engagement Span",
+    subtitle = "Higher engagement does not require high intensity",
+    x = "Average Intensity",
+    y = "Active Hours per Day"
+    ) + theme_bellabeat
+```
+
+### Sleep Duration Patterns
+**Purpose:** This plot provides a nuanced view of sleep behavior by distinguishing shorter daytime rest periods from overnight sleep. While not essential to the primary analysis, this illustrates the flexibility of minute-level data for future hypothesis analysis related to recovery and rest patterns.
+
+```{r sleep-duration-patterns-across-night plot, echo = FALSE, message = FALSE, warning = FALSE}
+daily_sleep_clean <- read_csv("data/processed/daily_sleep_clean.csv")
+
+ggplot(daily_sleep_clean, aes(x = 1, y = sleep_hours)) +
+  geom_boxplot(
+    fill = "#756BB1",
+    alpha = 0.6,
+    outlier.color = "black"
+  ) +
+  geom_point(
+    position = position_jitter(width = 0.05),
+    alpha = 0.3,
+    color = "#756BB1"
+  ) +
+  labs(
+    title = "Sleep Duration Patterns Across Tracked Nights",
+    subtitle = "Most sleep episodes reflect overnight wear, with some shorter-duration rest periods",
+    y = "Sleep Duration (Hours)",
+    x = NULL
+  ) + theme_bellabeat
+```
+
+## APPENDIX D: Shared Files
+
+- [Bellabeat Time Case Study](https://marytrankel.com/work-samples/analytics/Bellabeat-Time-Case-Study-MATrankel.docx) – **Word report** with technical and methodological details
+  - _Full analytical report with data preparation, assumptions, and appendix materials_
+
+- [Bellabeat Time Case Study](https://marytrankel.com/work-samples/analytics/Bellabeat-Time-Case-Study-MATrankel.pptx) – **PPT stakeholder presentation** with Executive Summary
+  - Slide deck summarizing key findings, insights, and recommendations.
+
+- Reproducible Analysis Files – **R scripts & markdown files** (uploaded to Kaggle)
+  - 01_import.R
+  - 02_clean.R
+  - 03_metrics.R
+  - Primary R Markdown File – Source notebook used to generate the analysis
+
+- [Bellabeat Time Case Study](https://marytrankel.com/work-samples/analytics/bellabeat_analysis.html) – **HTML report** produced by markdown file
