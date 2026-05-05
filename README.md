@@ -1,8 +1,5 @@
-# bellabeat-analysis
-This analysis was developed as part of the Google Data Analytics Capstone and is also published on Kaggle for reproducibility.
-
-## Bellabeat Case Study
-How Consumers Use Fitness Tracking Data
+# Bellabeat Case Study
+**How Consumers Use Fitness Tracking Data**
 
 ### Overview
 This project analyzes smart device usage patterns using publicly available Fitbit fitness tracker data to inform marketing strategy recommendations for Bellabeat, a wellness technology company focused on women’s health.
