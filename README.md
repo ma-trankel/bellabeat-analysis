@@ -7,8 +7,9 @@ The analysis explores when, how, and how consistently users engage with wearable
 This project was completed as part of the Google Data Analytics Professional Certificate Capstone, with an emphasis on reproducibility, transparency, and applied business decision making.
 
 ### Business Problem
-As competition in the wearable technology market increases, Bellabeat’s ability to sustain user engagement depends not only on product features, but on how effectively data insights are translated into meaningful, habit supporting user experiences.
-Key business questions:
+As competition in the wearable technology market increases, Bellabeat’s ability to sustain user engagement depends not only on product features, but on how effectively data insights are translated into meaningful, habit supporting user experiences. The analysis is grounded in the following business problem, with specific attention to the listed questions.
+
+#### Key business questions:
 1.	What are the dominant patterns in smart device usage?
 2.	How might these patterns apply to Bellabeat customers?
 3.	How can these insights inform Bellabeat’s marketing and engagement strategy?
