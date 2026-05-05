@@ -15,13 +15,13 @@ As competition in the wearable technology market increases, Bellabeat’s abilit
 3.	How can these insights inform Bellabeat’s marketing and engagement strategy?
 
 ### Data Source
--	Dataset: Fitbit Fitness Tracker Data
--	Source: Kaggle (Mobius, CC0: Public Domain)
--	Sample: 30 Fitbit users who consented to sharing activity and sleep data
--	Data Types: 
-    - Daily and hourly step counts
-    - Activity intensity
-    - Minute level sleep records
+- Dataset: Fitbit Fitness Tracker Data
+- Source: Kaggle (Mobius, CC0: Public Domain)
+- Sample: 30 Fitbit users who consented to sharing activity and sleep data
+- Data Types:
+  - Daily and hourly step counts
+  - Activity intensity
+  - Minute-level sleep records
 
 📌 Note: This dataset reflects Fitbit users, not Bellabeat customers directly; findings are observational and used for strategic inference rather than causal claims.
 
